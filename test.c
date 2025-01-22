@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 20:53:26 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/22 16:39:10 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:46:53 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ typedef struct s_haha
 {
 	struct timeval	start;
 	char			aled;
+	pthread_mutex_t	lck;
 }	t_haha;
 
 long long	ft_round(double nb)
@@ -41,7 +42,7 @@ long long	time_diff(struct timeval start, struct timeval cur)
 
 void	*routine(void *ptr_start)
 {
-	static pthread_mutex_t	lck;
+	//static pthread_mutex_t	lck;
 	struct timeval cur;
 	static int	a = 0;
 	t_haha			*haha;
@@ -49,11 +50,12 @@ void	*routine(void *ptr_start)
 	haha = (t_haha *)ptr_start;
 	while (!haha->aled)
 		;
-	pthread_mutex_lock(&lck);
-	usleep(1000000);
+	pthread_mutex_lock(&haha->lck);
+	usleep(1000000 - 10);
 	gettimeofday(&cur, NULL);
-	pthread_mutex_unlock(&lck);
+	pthread_mutex_unlock(&haha->lck);
 	printf("%d finished at %lld\n", a++, time_diff(haha->start, cur));
+	return (NULL);
 }
 
 int	main(void)
@@ -64,6 +66,7 @@ int	main(void)
 
 	i = -1;
 	haha.aled = 0;
+	pthread_mutex_init(&haha.lck, NULL);
 	while (++i < 5)
 		pthread_create(&(id[i]), NULL, &routine, &haha);
 	usleep(500);
@@ -73,5 +76,6 @@ int	main(void)
 	while (++i < 5)
 		pthread_join(id[i], NULL);
 	printf("Done\n");
+	pthread_mutex_destroy(&haha.lck);
 	return (0);
 }
