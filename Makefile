@@ -7,7 +7,7 @@ SRC_DIR = src/
 INC_DIR = include/
 OBJ_DIR = objs/
 
-FILES = main.c
+FILES = main.c utils.c routine.c init.c
 SRCS = $(addprefix $(SRC_DIR), $(FILES))
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:.c=.o))
 
@@ -17,7 +17,7 @@ $(NAME) : $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c
-	mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)
 	$(CC) $(FLAGS) -I $(INC_DIR) -c $< -o $@
 
 clean :
