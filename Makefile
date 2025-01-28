@@ -7,7 +7,7 @@ SRC_DIR = src/
 INC_DIR = include/
 OBJ_DIR = objs/
 
-FILES = test.c
+FILES = main.c
 SRCS = $(addprefix $(SRC_DIR), $(FILES))
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:.c=.o))
 
@@ -27,3 +27,6 @@ fclean : clean
 	rm -f $(NAME)
 
 re : fclean all
+
+tester :
+	@echo "c bon"
