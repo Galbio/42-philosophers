@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:30:45 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/28 17:47:56 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/28 22:06:50 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	init_misc(t_main *op)
 	i = -1;
 	misc->forks = forks;
 	misc->infos = op->infos;
+	misc->stop = 0;
 	pthread_mutex_init(&misc->printf, NULL);
 	op->misc = misc;
 	return (0);

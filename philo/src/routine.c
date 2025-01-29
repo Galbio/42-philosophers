@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:39 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/28 18:43:28 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/29 15:56:49 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int	wait_forks(t_philo *philo)
 		pthread_mutex_unlock(&philo->misc->printf);
 		return (print_status(1, philo));
 	}
+	if (philo->id % 2)
+		usleep(50);
 	pthread_mutex_unlock(&philo->misc->printf);
 	print_status(1, philo);
 	pthread_mutex_lock(&philo->misc->forks[philo->forks[1]]);
@@ -37,12 +39,11 @@ char	unlock_forks(t_philo *philo)
 {
 	if (!philo->fork_hold)
 		return (1);
-	pthread_mutex_unlock(&philo->misc->forks[philo->forks[philo->id % 2]]);
+	pthread_mutex_unlock(&philo->misc->forks[philo->forks[0]]);
 	philo->fork_hold--;
 	if (!philo->fork_hold)
 		return (1);
-	pthread_mutex_unlock(&philo->misc->forks[philo->forks[(philo->id \
-				+ 1) % 2]]);
+	pthread_mutex_unlock(&philo->misc->forks[philo->forks[1]]);
 	philo->fork_hold--;
 	return (1);
 }
@@ -57,12 +58,12 @@ char	routine_loop(t_philo *philo)
 	gettimeofday(&philo->last_meal, NULL);
 	philo->nb_meal++;
 	pthread_mutex_unlock(&philo->misc->printf);
-	usleep(1000 * philo->misc->infos->time_eat);
+	usleep(999 * philo->misc->infos->time_eat);
 	unlock_forks(philo);
 	if (check_dead(philo))
 		return (1);
 	print_status(3, philo);
-	usleep(1000 * philo->misc->infos->time_sleep);
+	usleep(999 * philo->misc->infos->time_sleep);
 	if (check_dead(philo))
 		return (1);
 	print_status(4, philo);
@@ -74,6 +75,8 @@ void	*routine(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
+	if (philo->id % 2)
+		usleep(1000);
 	while (!check_dead(philo))
 		if (routine_loop(philo))
 			break ;

@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/28 17:43:24 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/29 15:37:26 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,18 +68,15 @@ char	check_dead(t_philo *philo)
 int	print_status(int code, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->misc->printf);
+	printf("%ld %d ", time_diff(philo->misc->start), philo->id);
 	if (code == 1)
-		printf("[%ld] %d has taken a fork\n", time_diff(philo->misc->start), \
-				philo->id);
+		printf("has taken a fork\n");
 	else if (code == 2)
-		printf("[%ld] %d is eating\n", time_diff(philo->misc->start), \
-				philo->id);
+		printf("is eating\n");
 	else if (code == 3)
-		printf("[%ld] %d is sleeping\n", time_diff(philo->misc->start), \
-				philo->id);
+		printf("is sleeping\n");
 	else if (code == 4)
-		printf("[%ld] %d is thinking\n", time_diff(philo->misc->start), \
-				philo->id);
+		printf("is thinking\n");
 	else
 		printf("idk\n");
 	pthread_mutex_unlock(&philo->misc->printf);

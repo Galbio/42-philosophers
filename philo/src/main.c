@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:16 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/28 17:34:22 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/29 15:37:34 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	supervise(t_main *op, int *nb_alive)
 			pthread_mutex_lock(&op->misc->printf);
 			op->misc->stop = 1;
 			op->philos[i].dead = 1;
-			printf("[%ld] %d died\n", time_diff(op->misc->start), \
+			printf("%ld %d died\n", time_diff(op->misc->start), \
 					op->philos[i].id);
 			*nb_alive += 1;
 			pthread_mutex_unlock(&op->misc->printf);
