@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/28 22:19:40 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/29 23:01:48 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,16 @@
 # include <stdio.h>
 # include <sys/time.h>
 # include <pthread.h>
+
+# define RESET		"\033[0m"
+# define RED		"\033[31m"
+# define GREEN       "\033[32m"
+# define YELLOW      "\033[33m"
+# define BLUE        "\033[34m"
+# define MAGENTA     "\033[35m"
+# define CYAN        "\033[36m"
+# define BOLD		"\033[1m"
+# define UNDERLINE	"\033[4m"
 
 typedef struct s_infos
 {
@@ -31,10 +41,11 @@ typedef struct s_infos
 typedef struct s_misc
 {
 	struct timeval	start;
+	char			stop;
+	char			use_name;
 	t_infos			*infos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	printf;
-	char			stop;
 }	t_misc;
 
 typedef struct s_philo
@@ -42,6 +53,7 @@ typedef struct s_philo
 	struct timeval	last_meal;
 	pthread_t		thread;
 	t_misc			*misc;
+	char			*name;
 	char			dead;
 	char			fork_hold;
 	int				forks[2];
@@ -54,6 +66,7 @@ typedef struct s_main
 	t_philo	*philos;
 	t_infos	*infos;
 	t_misc	*misc;
+	char	use_name;
 }	t_main;
 
 /*    main.c   */
@@ -63,7 +76,7 @@ char		supervise(t_main *op, int *nb_alive);
 
 /*    init.c   */
 int			init_misc(t_main *op);
-int			init_philo(t_main *op);
+int			init_philo(t_main *op, int argc, char **argv);
 int			init_infos(t_infos *infos, int argc, char **argv);
 int			init_philosophers(int argc, char **argv, t_main *op);
 
@@ -79,5 +92,6 @@ char		check_dead(t_philo *philo);
 int			ft_atoi(char *str);
 int			ft_errors(int code, char res);
 long int	time_diff(struct timeval start);
+char		*ft_strdup(char *str);
 
 #endif

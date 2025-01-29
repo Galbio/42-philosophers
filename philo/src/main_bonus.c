@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:16 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/29 21:35:00 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/29 22:52:15 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	init_philo(t_main *op, int argc, char **argv)
 	int		i;
 
 	(void)argc;
-	(void)argv;
 	philos = malloc(sizeof(t_philo) * op->infos->nb_philo);
 	if (!philos)
 		return (1);
@@ -27,6 +26,8 @@ int	init_philo(t_main *op, int argc, char **argv)
 	i = -1;
 	while (++i < op->infos->nb_philo)
 	{
+		if (op->use_name)
+			philos[i].name = ft_strdup(argv[i]);
 		philos[i].id = i + 1;
 		philos[i].misc = op->misc;
 		philos[i].forks[0] = i;
@@ -43,7 +44,10 @@ int	init_philo(t_main *op, int argc, char **argv)
 int	print_status(int code, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->misc->printf);
-	printf("%ld %d ", time_diff(philo->misc->start), philo->id);
+	if (!philo->misc->use_name)
+		printf("%ld %i ", time_diff(philo->misc->start), philo->id);
+	else
+		printf("%ld %s ", time_diff(philo->misc->start), philo->name);
 	if (code == 1)
 		printf("has taken a fork\n");
 	else if (code == 2)
@@ -58,12 +62,25 @@ int	print_status(int code, t_philo *philo)
 	return (1);
 }
 
+void	free_all(t_main *op)
+{
+	int	i;
+
+	i = -1;
+	while (++i < op->infos->nb_philo)
+		free(op->philos[i].name);
+	free(op->infos);
+	free(op->misc->forks);
+	free(op->misc);
+	free(op->philos);
+}
+
 int	main(int argc, char **argv)
 {
 	int		i;
 	t_main	op;
 
-	if (argc < 5 || argc > 6)
+	if (argc < 5)
 		return (ft_errors(1, 1));
 	i = init_philosophers(argc - 1, argv + 1, &op);
 	if (i)
@@ -79,9 +96,6 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < op.infos->nb_philo)
 		pthread_join(op.philos[i].thread, NULL);
-	free(op.infos);
-	free(op.misc->forks);
-	free(op.misc);
-	free(op.philos);
+	free_all(&op);
 	return (0);
 }

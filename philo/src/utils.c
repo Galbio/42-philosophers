@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/29 15:37:26 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/29 22:57:33 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,18 @@ int	ft_errors(int code, char res)
 		return (res);
 	else if (code == 1)
 		write(2, "Invalid arguments number\n", 25);
+	else if (code == 3)
+		write(2, "Invalid number of philo\n", 24);
+	else if (code == 4)
+		write(2, "Invalid time to die\n", 20);
+	else if (code == 5)
+		write(2, "Invalid time to eat\n", 20);
+	else if (code == 6)
+		write(2, "Invalid sleep time\n", 19);
+	else if (code == 7)
+		write(2, "Invalid minimum meal count\n", 27);
+	else if (code == 8)
+		write(2, "Too many arguments\n", 19);
 	else
 		write(2, "Error\n", 6);
 	return (res);
@@ -65,20 +77,24 @@ char	check_dead(t_philo *philo)
 	return (res);
 }
 
-int	print_status(int code, t_philo *philo)
+char	*ft_strdup(char *str)
 {
-	pthread_mutex_lock(&philo->misc->printf);
-	printf("%ld %d ", time_diff(philo->misc->start), philo->id);
-	if (code == 1)
-		printf("has taken a fork\n");
-	else if (code == 2)
-		printf("is eating\n");
-	else if (code == 3)
-		printf("is sleeping\n");
-	else if (code == 4)
-		printf("is thinking\n");
-	else
-		printf("idk\n");
-	pthread_mutex_unlock(&philo->misc->printf);
-	return (1);
+	char	*dest;
+	int		i;
+
+	if (!str[0])
+		ft_strdup("GoodTry");
+	if (str[0] == '\\' && str[1])
+		str++;
+	i = -1;
+	while (str[++i])
+		;
+	dest = malloc(sizeof(char) * (i + 1));
+	if (!dest)
+		return (NULL);
+	i = -1;
+	while (str[++i])
+		dest[i] = str[i];
+	dest[i] = 0;
+	return (dest);
 }
