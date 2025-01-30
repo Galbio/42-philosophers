@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 21:30:09 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 17:43:04 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 22:58:11 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ char	everyone_ate(t_main *op)
 	while (++i < op->infos->nb_philo)
 	{
 		pthread_mutex_lock(&op->misc->printf);
-		if (op->philos[i].nb_meal < op->infos->nb_meal)
+		if (!op->philos[i].dead && \
+				op->philos[i].nb_meal < op->infos->nb_meal)
 		{
 			pthread_mutex_unlock(&op->misc->printf);
 			return (0);

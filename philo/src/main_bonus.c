@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:16 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 17:38:54 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 22:13:25 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	init_infos(t_main *op, int argc, char **argv)
 
 void	check_endloop(t_main *op, int *argc, char **argv)
 {
-	const char	*flag = "--no-endloop";
+	const char	*flag = "--no-stop";
 	int			i;
 
 	i = -1;

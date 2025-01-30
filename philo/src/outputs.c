@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:26 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 17:18:28 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 22:53:58 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,27 @@ int	ft_errors(int code, char res)
 	return (res);
 }
 
+void	ft_putcolor(int code)
+{
+	if (code == 0)
+		printf("%s", RESET);
+	else if (code == 2)
+		printf("%s", YELLOW);
+	else if (code == 3)
+		printf("%s", BLUE);
+	else if (code == 4)
+		printf("%s", CYAN);
+	else if (code == 5)
+		printf("%s", RED);
+	else if (code == 1)
+		printf("%s", GREY);
+}
+
 int	print_status(int code, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->misc->printf);
+	if (BONUS)
+		ft_putcolor(code);
 	if (!philo->misc->use_name)
 		printf("%ld %i ", time_diff(philo->misc->start), philo->id);
 	else
@@ -56,6 +74,7 @@ int	print_status(int code, t_philo *philo)
 		printf("died\n");
 	else
 		printf("idk\n");
+	printf("%s", RESET);
 	pthread_mutex_unlock(&philo->misc->printf);
 	return (1);
 }
