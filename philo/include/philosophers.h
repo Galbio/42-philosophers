@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/29 23:01:48 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 17:32:35 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,17 +67,19 @@ typedef struct s_main
 	t_infos	*infos;
 	t_misc	*misc;
 	char	use_name;
+	char	end_loop;
 }	t_main;
 
 /*    main.c   */
 char		godmode(t_main *op);
 char		everyone_ate(t_main *op);
 char		supervise(t_main *op, int *nb_alive);
+char		*ft_strdup(char *str);
 
 /*    init.c   */
 int			init_misc(t_main *op);
 int			init_philo(t_main *op, int argc, char **argv);
-int			init_infos(t_infos *infos, int argc, char **argv);
+int			init_infos(t_main *op, int argc, char **argv);
 int			init_philosophers(int argc, char **argv, t_main *op);
 
 /*   routine.c  */
@@ -92,6 +94,7 @@ char		check_dead(t_philo *philo);
 int			ft_atoi(char *str);
 int			ft_errors(int code, char res);
 long int	time_diff(struct timeval start);
+void		free_all(t_main *op);
 char		*ft_strdup(char *str);
 
 #endif

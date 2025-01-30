@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/29 22:57:33 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 17:18:02 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,6 @@ long int	time_diff(struct timeval start)
 	gettimeofday(&cur, NULL);
 	a = cur.tv_usec / 1000 + (1000 * (cur.tv_sec - start.tv_sec));
 	return (a - b);
-}
-
-int	ft_errors(int code, char res)
-{
-	if (code == 0)
-		return (res);
-	else if (code == 1)
-		write(2, "Invalid arguments number\n", 25);
-	else if (code == 3)
-		write(2, "Invalid number of philo\n", 24);
-	else if (code == 4)
-		write(2, "Invalid time to die\n", 20);
-	else if (code == 5)
-		write(2, "Invalid time to eat\n", 20);
-	else if (code == 6)
-		write(2, "Invalid sleep time\n", 19);
-	else if (code == 7)
-		write(2, "Invalid minimum meal count\n", 27);
-	else if (code == 8)
-		write(2, "Too many arguments\n", 19);
-	else
-		write(2, "Error\n", 6);
-	return (res);
 }
 
 int	ft_atoi(char *str)
@@ -83,7 +60,7 @@ char	*ft_strdup(char *str)
 	int		i;
 
 	if (!str[0])
-		ft_strdup("GoodTry");
+		return (ft_strdup("GoodTry"));
 	if (str[0] == '\\' && str[1])
 		str++;
 	i = -1;
@@ -97,4 +74,17 @@ char	*ft_strdup(char *str)
 		dest[i] = str[i];
 	dest[i] = 0;
 	return (dest);
+}
+
+void	free_all(t_main *op)
+{
+	int	i;
+
+	i = -1;
+	while (op->use_name && ++i < op->infos->nb_philo)
+		free(op->philos[i].name);
+	free(op->infos);
+	free(op->misc->forks);
+	free(op->misc);
+	free(op->philos);
 }

@@ -6,73 +6,74 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:16 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/29 22:52:15 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 17:38:54 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	init_philo(t_main *op, int argc, char **argv)
+int	get_nb_philo(int argc, char **argv, t_main *op)
 {
-	t_philo	*philos;
-	int		i;
-
-	(void)argc;
-	philos = malloc(sizeof(t_philo) * op->infos->nb_philo);
-	if (!philos)
-		return (1);
-	if (init_misc(op))
-		return (free(philos), 1);
-	i = -1;
-	while (++i < op->infos->nb_philo)
-	{
-		if (op->use_name)
-			philos[i].name = ft_strdup(argv[i]);
-		philos[i].id = i + 1;
-		philos[i].misc = op->misc;
-		philos[i].forks[0] = i;
-		philos[i].forks[1] = (i + 1) % op->infos->nb_philo;
-		philos[i].dead = 0;
-		philos[i].fork_hold = 0;
-		philos[i].nb_meal = 0;
-		pthread_mutex_init(&op->misc->forks[i], NULL);
-	}
-	op->philos = philos;
-	return (0);
-}
-
-int	print_status(int code, t_philo *philo)
-{
-	pthread_mutex_lock(&philo->misc->printf);
-	if (!philo->misc->use_name)
-		printf("%ld %i ", time_diff(philo->misc->start), philo->id);
-	else
-		printf("%ld %s ", time_diff(philo->misc->start), philo->name);
-	if (code == 1)
-		printf("has taken a fork\n");
-	else if (code == 2)
-		printf("is eating\n");
-	else if (code == 3)
-		printf("is sleeping\n");
-	else if (code == 4)
-		printf("is thinking\n");
-	else
-		printf("idk\n");
-	pthread_mutex_unlock(&philo->misc->printf);
-	return (1);
-}
-
-void	free_all(t_main *op)
-{
+	int	res;
 	int	i;
 
+	res = 0;
 	i = -1;
-	while (++i < op->infos->nb_philo)
-		free(op->philos[i].name);
-	free(op->infos);
-	free(op->misc->forks);
-	free(op->misc);
-	free(op->philos);
+	while (++i < argc)
+	{
+		if (argv[i][0] >= '0' && argv[i][0] <= '9')
+		{
+			if (!i)
+				return (ft_atoi(argv[0]));
+			op->use_name = 1;
+			break ;
+		}
+		res++;
+	}
+	op->use_name = 1;
+	return (res);
+}
+
+int	init_infos(t_main *op, int argc, char **argv)
+{
+	char	stop;
+
+	stop = 0;
+	op->infos->nb_philo = get_nb_philo(argc, argv, op);
+	if (op->infos->nb_philo <= 0)
+		stop = ft_errors(3, 1);
+	argv += (op->infos->nb_philo * op->use_name) + !op->use_name;
+	argc -= (op->infos->nb_philo * op->use_name) + !op->use_name - 1;
+	if (argc < 4 || argc > 5)
+		return (ft_errors(9 - (argc > 5), 1));
+	op->infos->time_die = ft_atoi(*argv++);
+	if (op->infos->time_die <= 0)
+		stop = ft_errors(4, 1);
+	op->infos->time_eat = ft_atoi(*argv++);
+	if (op->infos->time_eat <= 0)
+		stop = ft_errors(5, 1);
+	op->infos->time_sleep = ft_atoi(*argv++);
+	if (op->infos->time_sleep <= 0)
+		stop = ft_errors(6, 1);
+	op->infos->nb_meal = -2;
+	if (argc == 5)
+		op->infos->nb_meal = ft_atoi(*argv);
+	if (argc == 5 && op->infos->nb_meal <= 0)
+		stop = ft_errors(7, 1);
+	return (stop);
+}
+
+void	check_endloop(t_main *op, int *argc, char **argv)
+{
+	const char	*flag = "--no-endloop";
+	int			i;
+
+	i = -1;
+	while (flag[++i] && argv[*argc - 1][i])
+		if (flag[i] != argv[*argc - 1][i])
+			return ;
+	(*argc)--;
+	op->end_loop = 0;
 }
 
 int	main(int argc, char **argv)
@@ -82,6 +83,8 @@ int	main(int argc, char **argv)
 
 	if (argc < 5)
 		return (ft_errors(1, 1));
+	op.end_loop = 1;
+	check_endloop(&op, &argc, argv);
 	i = init_philosophers(argc - 1, argv + 1, &op);
 	if (i)
 		return (ft_errors(0, 1));
