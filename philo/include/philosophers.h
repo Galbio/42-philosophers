@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 22:53:43 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/01/30 23:00:51 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define UNDERLINE	"\033[4m"
 
 # ifndef BONUS
-#  define BONUS 1
+#  define BONUS 0
 # endif
 
 typedef struct s_infos

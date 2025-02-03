@@ -6,14 +6,14 @@
 #    By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 21:25:08 by gakarbou          #+#    #+#              #
-#    Updated: 2025/01/30 17:21:31 by gakarbou         ###   ########.fr        #
+#    Updated: 2025/01/30 23:03:00 by gakarbou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 CC = cc
-FLAGS = -Wall -Wextra -Werror -g
+FLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = src/
 BON_DIR = bonus/
@@ -33,7 +33,7 @@ $(NAME) : $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
 bonus : $(BONUS_OBJS)
-	$(CC) $(FLAGS) $(BONUS_OBJS) -o $(NAME)
+	$(CC) $(FLAGS) $(BONUS_OBJS) -D BONUS=1 -o $(NAME)
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
