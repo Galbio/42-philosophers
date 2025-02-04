@@ -6,26 +6,11 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 01:51:15 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/31 14:51:20 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 02:10:06 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers_bonus.h"
-
-/*
-void* thread(void* arg)
-{
-    //wait
-    sem_wait(&mutex);
-    printf("\nEntered..\n");
-
-    //critical section
-    sleep(4);
-    
-    //signal
-    printf("\nJust Exiting...\n");
-    sem_post(&mutex);
-}*/
 
 int	init_infos(t_main *op, int argc, char **argv)
 {
@@ -61,14 +46,14 @@ int	init_misc(t_main *op)
 	misc = malloc(sizeof(t_misc));
 	if (!misc)
 		return (1);
-	forks = malloc(sizeof(sem_t) * op->infos.nb_philo);
-	if (!misc)
-		return (free(misc), 1);
+	forks = sem_open("/forks", O_CREAT, 0600, 1);
+	sem_init(forks, 1, op->infos.nb_philo);
 	i = -1;
 	misc->forks = forks;
 	misc->infos = op->infos;
 	misc->stop = 1;
-	sem_init(&misc->printf, 1, 0);
+	misc->printf = sem_open("/philo", O_CREAT, 0600, 1);
+	sem_init(misc->printf, 1, 1);
 	op->misc = misc;
 	return (0);
 }
@@ -93,7 +78,6 @@ char	init_philo(t_main *op)
 		philos[i].dead = 0;
 		philos[i].fork_hold = 0;
 		philos[i].nb_meal = 0;
-		sem_init(&op->misc->forks[i], 1, 0);
 	}
 	op->philos = philos;
 	return (0);
@@ -108,16 +92,36 @@ int	init_philos(t_main *op, int argc, char **argv)
 	return (0);
 }
 
-void	routine_start(t_philo *philo)
+char	routine_start(t_philo *philo)
 {
-	while (philo->misc->stop)
-		printf("stop = %d, addr = %p\n", philo->misc->stop, &philo->misc->stop);
-	printf("%d miam\n", philo->id);
-	while (1)
-		;
+	sem_wait(philo->misc->printf);
+	printf("miam from %d\n", philo->id);
+	usleep(50000);
+	printf("dodo from %d\n", philo->id);
+	sem_post(philo->misc->printf);
+	return (0);
 }
 
-void	create_forks(t_main *op)
+void	supervisor(t_main *op)
+{
+	int	i;
+
+	printf("I'll take a nap\n");
+	sleep(1);
+	i = -1;
+	sem_close(op->misc->printf);
+	sem_unlink("/philo");
+	sem_close(op->misc->forks);
+	sem_unlink("/forks");
+	free(op->misc);
+	free(op->philos);
+	printf("They're dead lol\n");
+	sleep(3);
+	//while (++i < op->infos.nb_philo)
+		//kill(op->philos[i].pid, SIGINT);
+}
+
+char	create_forks(t_main *op)
 {
 	int		i;
 	pid_t	pid;
@@ -127,35 +131,22 @@ void	create_forks(t_main *op)
 	{
 		pid = fork();
 		if (pid != 0)
-		{
-			printf("My son's pid is %d\n", pid);
 			op->philos[i].pid = pid;
-		}
 		else
-			routine_start(&op->philos[i]);
+			return (routine_start(&op->philos[i]));
 	}
-	op->misc->stop = 0;
+	supervisor(op);
+	return (0);
 }
 
 int main(int argc, char **argv)
 {
 	t_main	op;
-	int		i;
 
 	if (argc < 5 || argc > 6)
 		return (1);
 	if (init_philos(&op, argc - 1, argv + 1))
 		return (1);
 	create_forks(&op);
-	printf("stop = %d, addr = %p\n", op.philos[0]->misc->stop, &op.philos[0]->misc->stop);
-	printf("I'll take a nap\n");
-	sleep(2);
-	i = -1;
-	while (++i < op.infos.nb_philo)
-		kill(op.philos[i].pid, SIGINT);
-	printf("They're dead lol\n");
-	free(op.misc->forks);
-	free(op.misc);
-	free(op.philos);
-    return 0;
+    return (0);
 }

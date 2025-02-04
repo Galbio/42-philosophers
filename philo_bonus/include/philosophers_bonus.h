@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 02:36:23 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/31 14:44:42 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 01:16:19 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_misc
 	char			stop;
 	t_info			infos;
 	sem_t			*forks;
-	sem_t			printf;
+	sem_t			*printf;
 }	t_misc;
 
 typedef struct s_philo
