@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 01:51:15 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/04 02:10:06 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/05 01:25:04 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,15 @@ int	init_infos(t_main *op, int argc, char **argv)
 int	init_misc(t_main *op)
 {
 	t_misc			*misc;
-	sem_t		*forks;
-	int				i;
 
 	misc = malloc(sizeof(t_misc));
 	if (!misc)
 		return (1);
-	forks = sem_open("/forks", O_CREAT, 0600, 1);
-	sem_init(forks, 1, op->infos.nb_philo);
-	i = -1;
-	misc->forks = forks;
-	misc->infos = op->infos;
-	misc->stop = 1;
+	misc->forks = sem_open("/forks", O_CREAT, 0600, 1);
 	misc->printf = sem_open("/philo", O_CREAT, 0600, 1);
+	sem_init(misc->forks, 1, op->infos.nb_philo);
 	sem_init(misc->printf, 1, 1);
+	misc->infos = op->infos;
 	op->misc = misc;
 	return (0);
 }
@@ -73,8 +68,6 @@ char	init_philo(t_main *op)
 	{
 		philos[i].id = i + 1;
 		philos[i].misc = op->misc;
-		philos[i].forks[0] = i;
-		philos[i].forks[1]-= (i + 1) % op->infos.nb_philo;
 		philos[i].dead = 0;
 		philos[i].fork_hold = 0;
 		philos[i].nb_meal = 0;
@@ -92,33 +85,71 @@ int	init_philos(t_main *op, int argc, char **argv)
 	return (0);
 }
 
-char	routine_start(t_philo *philo)
+void	free_forks(t_philo *philo)
 {
-	sem_wait(philo->misc->printf);
-	printf("miam from %d\n", philo->id);
-	usleep(50000);
-	printf("dodo from %d\n", philo->id);
-	sem_post(philo->misc->printf);
+	if (philo->fork_hold)
+		sem_post(philo->misc->forks);
+	if (--philo->fork_hold)
+		sem_post(philo->misc->forks);
+}
+
+char	wait_forks(t_philo *philo)
+{
+	sem_wait(philo->misc->forks);
+	philo->fork_hold++;
+	if (philo->dead)
+		return (1);
+	print_status(philo, 1);
+	if (philo->misc->infos.nb_philo == 1)
+		return (1);
+	sem_wait(philo->misc->forks);
+	philo->fork_hold++;
+	if (philo->dead)
+		return (1);
+	print_status(philo, 1);
+	print_status(philo, 2);
 	return (0);
 }
 
-void	supervisor(t_main *op)
+char	routine_loop(t_philo *philo)
+{
+	if (wait_forks(philo))
+		return (free_forks(philo), 1);
+	ft_usleep(philo->misc->infos.time_eat * 1000);
+	sem_post(philo->misc->forks);
+	sem_post(philo->misc->forks);
+	if (philo->dead)
+		return (1);
+	printf("%d is sleeping\n", philo->id);
+	ft_usleep(philo->misc->infos.time_sleep * 1000);
+	if (philo->dead)
+		return (1);
+	return (0);
+}
+
+char	routine_start(t_philo *philo)
 {
 	int	i;
 
-	printf("I'll take a nap\n");
-	sleep(1);
+	if (philo->id % 2)
+		usleep(50);
 	i = -1;
+	while (++i < 10)
+		if (routine_loop(philo))
+			break ;
+	return (0);
+}
+
+void	free_all(t_main *op)
+{
+	sleep(1);
+	op->misc->stop = 1;
 	sem_close(op->misc->printf);
 	sem_unlink("/philo");
 	sem_close(op->misc->forks);
 	sem_unlink("/forks");
 	free(op->misc);
 	free(op->philos);
-	printf("They're dead lol\n");
-	sleep(3);
-	//while (++i < op->infos.nb_philo)
-		//kill(op->philos[i].pid, SIGINT);
 }
 
 char	create_forks(t_main *op)
@@ -127,19 +158,25 @@ char	create_forks(t_main *op)
 	pid_t	pid;
 
 	i = -1;
+	op->misc->stop = 0;
 	while (++i < op->infos.nb_philo)
 	{
 		pid = fork();
 		if (pid != 0)
 			op->philos[i].pid = pid;
 		else
-			return (routine_start(&op->philos[i]));
+		{
+			routine_start(&op->philos[i]);
+			(sem_close(op->misc->printf), sem_close(op->misc->forks));
+			(free(op->philos), free(op->misc));
+			return (0);
+		}
 	}
-	supervisor(op);
+	free_all(op);
 	return (0);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_main	op;
 
@@ -148,5 +185,5 @@ int main(int argc, char **argv)
 	if (init_philos(&op, argc - 1, argv + 1))
 		return (1);
 	create_forks(&op);
-    return (0);
+	return (0);
 }

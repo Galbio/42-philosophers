@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/31 02:55:38 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/31 02:58:59 by gakarbou         ###   ########.fr       */
+/*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
+/*   Updated: 2025/02/05 00:46:34 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ long int	time_diff(struct timeval start)
 	double			a;
 	double			b;
 
-	b = start.tv_usec / 1000;
+	b = start.tv_usec;
 	gettimeofday(&cur, NULL);
-	a = cur.tv_usec / 1000 + (1000 * (cur.tv_sec - start.tv_sec));
+	a = cur.tv_usec + (1000000 * (cur.tv_sec - start.tv_sec));
 	return (a - b);
 }
 
@@ -42,27 +42,34 @@ int	ft_atoi(char *str)
 	return (res);
 }
 
-int	ft_errors(int code, char res)
+char	*ft_strdup(char *str)
 {
-	if (code == 0)
-		return (res);
-	else if (code == 1)
-		write(2, "Invalid arguments number\n", 25);
-	else if (code == 3)
-		write(2, "Invalid number of philo\n", 24);
-	else if (code == 4)
-		write(2, "Invalid time to die\n", 20);
-	else if (code == 5)
-		write(2, "Invalid time to eat\n", 20);
-	else if (code == 6)
-		write(2, "Invalid sleep time\n", 19);
-	else if (code == 7)
-		write(2, "Invalid minimum meal count\n", 27);
-	else if (code == 8)
-		write(2, "Too many arguments\n", 19);
-	else if (code == 9)
-		write(2, "Not enough arguments\n", 21);
-	else
-		write(2, "Error\n", 6);
-	return (res);
+	char	*dest;
+	int		i;
+
+	if (!str[0])
+		return (ft_strdup("GoodTry"));
+	if (str[0] == '\\' && str[1])
+		str++;
+	i = -1;
+	while (str[++i])
+		;
+	dest = malloc(sizeof(char) * (i + 1));
+	if (!dest)
+		return (NULL);
+	i = -1;
+	while (str[++i])
+		dest[i] = str[i];
+	dest[i] = 0;
+	return (dest);
+}
+
+void	print_status(t_philo *philo, char code)
+{
+	sem_wait(philo->misc->printf);
+	if (code == 1)
+		printf("%d took a fork\n", philo->id);
+	else if (code == 2)
+		printf("%d is eating\n", philo->id);
+	sem_post(philo->misc->printf);
 }
