@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 23:00:51 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 22:31:23 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,9 @@ typedef struct s_misc
 	t_infos			*infos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	printf;
+	pthread_mutex_t	fork;
+	pthread_mutex_t	meal;
+	pthread_mutex_t	lock;
 }	t_misc;
 
 typedef struct s_philo
@@ -101,5 +104,6 @@ int			ft_errors(int code, char res);
 long int	time_diff(struct timeval start);
 void		free_all(t_main *op);
 char		*ft_strdup(char *str);
+void		ft_usleep(long time);
 
 #endif

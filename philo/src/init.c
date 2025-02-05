@@ -6,11 +6,25 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:30:45 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 17:31:28 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 22:35:49 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	init_philo_infos(t_philo *philos, t_main *op, int i, char *name)
+{
+	philos[i].id = i + 1;
+	if (op->use_name)
+		philos[i].name = ft_strdup(name);
+	philos[i].misc = op->misc;
+	philos[i].forks[0] = i;
+	philos[i].forks[1] = (i + 1) % op->infos->nb_philo;
+	philos[i].dead = 0;
+	philos[i].fork_hold = 0;
+	philos[i].nb_meal = 0;
+	pthread_mutex_init(&op->misc->forks[i], NULL);
+}
 
 int	init_philo(t_main *op, int argc, char **argv)
 {
@@ -25,18 +39,7 @@ int	init_philo(t_main *op, int argc, char **argv)
 		return (free(philos), 1);
 	i = -1;
 	while (++i < op->infos->nb_philo)
-	{
-		philos[i].id = i + 1;
-		if (op->use_name)
-			philos[i].name = ft_strdup(argv[i]);
-		philos[i].misc = op->misc;
-		philos[i].forks[0] = i;
-		philos[i].forks[1] = (i + 1) % op->infos->nb_philo;
-		philos[i].dead = 0;
-		philos[i].fork_hold = 0;
-		philos[i].nb_meal = 0;
-		pthread_mutex_init(&op->misc->forks[i], NULL);
-	}
+		init_philo_infos(philos, op, i, argv[i]);
 	op->philos = philos;
 	return (0);
 }
@@ -59,6 +62,9 @@ int	init_misc(t_main *op)
 	misc->stop = 0;
 	misc->use_name = op->use_name;
 	pthread_mutex_init(&misc->printf, NULL);
+	pthread_mutex_init(&misc->meal, NULL);
+	pthread_mutex_init(&misc->fork, NULL);
+	pthread_mutex_init(&misc->lock, NULL);
 	op->misc = misc;
 	return (0);
 }

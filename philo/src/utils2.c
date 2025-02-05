@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   outputs.c                                          :+:      :+:    :+:   */
+/*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:26 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 22:53:58 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 22:34:27 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ int	print_status(int code, t_philo *philo)
 	if (BONUS)
 		ft_putcolor(code);
 	if (!philo->misc->use_name)
-		printf("%ld %i ", time_diff(philo->misc->start), philo->id);
+		printf("%ld %i ", time_diff(philo->misc->start) / 1000, philo->id);
 	else
-		printf("%ld %s ", time_diff(philo->misc->start), philo->name);
+		printf("%ld %s ", time_diff(philo->misc->start) / 1000, philo->name);
 	if (code == 1)
 		printf("has taken a fork\n");
 	else if (code == 2)
@@ -77,4 +77,17 @@ int	print_status(int code, t_philo *philo)
 	printf("%s", RESET);
 	pthread_mutex_unlock(&philo->misc->printf);
 	return (1);
+}
+
+void	ft_usleep(long time)
+{
+	struct timeval	start;
+
+	gettimeofday(&start, NULL);
+	while (1)
+	{
+		if (time_diff(start) >= time - 180)
+			break ;
+		usleep(50);
+	}
 }

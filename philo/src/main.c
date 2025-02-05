@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:16 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 17:36:31 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 22:05:42 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	main(int argc, char **argv)
 	{
 		gettimeofday(&op.philos[i].last_meal, NULL);
 		pthread_create(&op.philos[i].thread, NULL, &routine, &op.philos[i]);
+		usleep(10);
 	}
 	godmode(&op);
 	i = -1;

@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/01/30 17:18:02 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/04 22:32:11 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ long int	time_diff(struct timeval start)
 	double			a;
 	double			b;
 
-	b = start.tv_usec / 1000;
+	b = start.tv_usec;
 	gettimeofday(&cur, NULL);
-	a = cur.tv_usec / 1000 + (1000 * (cur.tv_sec - start.tv_sec));
+	a = cur.tv_usec + (1000000 * (cur.tv_sec - start.tv_sec));
 	return (a - b);
 }
 
@@ -47,10 +47,10 @@ char	check_dead(t_philo *philo)
 	char	res;
 
 	res = 0;
-	pthread_mutex_lock(&philo->misc->printf);
+	pthread_mutex_lock(&philo->misc->lock);
 	if (philo->dead || philo->misc->stop)
 		res = 1;
-	pthread_mutex_unlock(&philo->misc->printf);
+	pthread_mutex_unlock(&philo->misc->lock);
 	return (res);
 }
 
@@ -82,7 +82,14 @@ void	free_all(t_main *op)
 
 	i = -1;
 	while (op->use_name && ++i < op->infos->nb_philo)
+	{
 		free(op->philos[i].name);
+		pthread_mutex_destroy(&op->misc->forks[i]);
+	}
+	pthread_mutex_destroy(&op->misc->printf);
+	pthread_mutex_destroy(&op->misc->fork);
+	pthread_mutex_destroy(&op->misc->meal);
+	pthread_mutex_destroy(&op->misc->lock);
 	free(op->infos);
 	free(op->misc->forks);
 	free(op->misc);
