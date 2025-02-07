@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/04 22:31:23 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/06 18:39:27 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_infos
 typedef struct s_misc
 {
 	struct timeval	start;
+	int long		start_time;
 	char			stop;
 	char			use_name;
 	t_infos			*infos;
@@ -59,12 +60,12 @@ typedef struct s_misc
 typedef struct s_philo
 {
 	struct timeval	last_meal;
+	pthread_mutex_t	*forks[2];
 	pthread_t		thread;
 	t_misc			*misc;
 	char			*name;
 	char			dead;
 	char			fork_hold;
-	int				forks[2];
 	int				id;
 	int				nb_meal;
 }	t_philo;
@@ -97,13 +98,14 @@ char		unlock_forks(t_philo *philo);
 int			wait_forks(t_philo *philo);
 
 /*   utils.c   */
-int			print_status(int code, t_philo *philo);
+int			print_status(int code, t_philo *philo, int long time);
 char		check_dead(t_philo *philo);
 int			ft_atoi(char *str);
 int			ft_errors(int code, char res);
 long int	time_diff(struct timeval start);
 void		free_all(t_main *op);
 char		*ft_strdup(char *str);
-void		ft_usleep(long time);
+char		ft_usleep(long time, t_philo *philo);
+int long	ft_gettimeofday(void);
 
 #endif

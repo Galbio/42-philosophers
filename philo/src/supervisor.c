@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 21:30:09 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/04 22:34:54 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/06 23:49:13 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	supervise(t_main *op, int *nb_alive)
 				op->misc->stop = 1;
 			op->philos[i].dead = 1;
 			pthread_mutex_unlock(&op->misc->lock);
-			print_status(5, &op->philos[i]);
+			print_status(5, &op->philos[i], ft_gettimeofday());
 			(*nb_alive)--;
 			return (op->misc->stop);
 		}

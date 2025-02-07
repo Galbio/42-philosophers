@@ -6,11 +6,19 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:26 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/04 22:34:27 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/06 18:39:16 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+int long	ft_gettimeofday(void)
+{
+	struct timeval	cur;
+
+	gettimeofday(&cur, NULL);
+	return ((cur.tv_sec * 1000) + (cur.tv_usec / 1000));
+}
 
 int	ft_errors(int code, char res)
 {
@@ -53,15 +61,15 @@ void	ft_putcolor(int code)
 		printf("%s", GREY);
 }
 
-int	print_status(int code, t_philo *philo)
+int	print_status(int code, t_philo *philo, int long time)
 {
 	pthread_mutex_lock(&philo->misc->printf);
 	if (BONUS)
 		ft_putcolor(code);
 	if (!philo->misc->use_name)
-		printf("%ld %i ", time_diff(philo->misc->start) / 1000, philo->id);
+		printf("%ld %i ", time - philo->misc->start_time, philo->id);
 	else
-		printf("%ld %s ", time_diff(philo->misc->start) / 1000, philo->name);
+		printf("%ld %s ", time_diff(philo->misc->start), philo->name);
 	if (code == 1)
 		printf("has taken a fork\n");
 	else if (code == 2)
@@ -79,15 +87,18 @@ int	print_status(int code, t_philo *philo)
 	return (1);
 }
 
-void	ft_usleep(long time)
+char	ft_usleep(long time, t_philo *philo)
 {
-	struct timeval	start;
+	int long	start;
 
-	gettimeofday(&start, NULL);
+	start = ft_gettimeofday();
 	while (1)
 	{
-		if (time_diff(start) >= time - 180)
+		if (check_dead(philo))
+			return (1);
+		if ((ft_gettimeofday() - start) == time)
 			break ;
-		usleep(50);
+		usleep(100);
 	}
+	return (0);
 }

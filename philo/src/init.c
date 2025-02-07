@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:30:45 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/04 22:35:49 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/06 14:07:03 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,11 @@ void	init_philo_infos(t_philo *philos, t_main *op, int i, char *name)
 	if (op->use_name)
 		philos[i].name = ft_strdup(name);
 	philos[i].misc = op->misc;
-	philos[i].forks[0] = i;
-	philos[i].forks[1] = (i + 1) % op->infos->nb_philo;
+	philos[i].forks[0] = &op->misc->forks[i];
+	philos[i].forks[1] = &op->misc->forks[(i + 1) % op->infos->nb_philo];
 	philos[i].dead = 0;
 	philos[i].fork_hold = 0;
 	philos[i].nb_meal = 0;
-	pthread_mutex_init(&op->misc->forks[i], NULL);
 }
 
 int	init_philo(t_main *op, int argc, char **argv)
@@ -39,6 +38,9 @@ int	init_philo(t_main *op, int argc, char **argv)
 		return (free(philos), 1);
 	i = -1;
 	while (++i < op->infos->nb_philo)
+		pthread_mutex_init(&op->misc->forks[i], NULL);
+	i = -1;
+	while (++i < op->infos->nb_philo)
 		init_philo_infos(philos, op, i, argv[i]);
 	op->philos = philos;
 	return (0);
@@ -48,7 +50,6 @@ int	init_misc(t_main *op)
 {
 	t_misc			*misc;
 	pthread_mutex_t	*forks;
-	int				i;
 
 	misc = malloc(sizeof(t_misc));
 	if (!misc)
@@ -56,7 +57,6 @@ int	init_misc(t_main *op)
 	forks = malloc(sizeof(pthread_mutex_t) * op->infos->nb_philo);
 	if (!misc)
 		return (free(misc), 1);
-	i = -1;
 	misc->forks = forks;
 	misc->infos = op->infos;
 	misc->stop = 0;
