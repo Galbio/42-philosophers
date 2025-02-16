@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:39 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/06 18:40:36 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/09 08:44:05 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ char	unlock_forks(t_philo *philo)
 
 char	routine_loop(t_philo *philo)
 {
+	print_status(4, philo, ft_gettimeofday());
 	wait_forks(philo);
 	if (check_dead(philo) || philo->fork_hold != 2)
 		return (unlock_forks(philo));
@@ -66,7 +67,6 @@ char	routine_loop(t_philo *philo)
 	print_status(3, philo, ft_gettimeofday());
 	if (ft_usleep(philo->misc->infos->time_sleep, philo))
 		return (1);
-	print_status(4, philo, ft_gettimeofday());
 	return (0);
 }
 
