@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 00:34:45 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 21:13:49 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 21:39:50 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,33 @@ char	create_forks(t_main *op)
 	return (0);
 }
 
+void	check_endloop(char *loop, int *argc, char **argv)
+{
+	const char	*flag = "--no-stop";
+	int			i;
+
+	i = -1;
+	while (flag[++i] && argv[*argc - 1][i])
+		if (flag[i] != argv[*argc - 1][i])
+			return ;
+	(*argc)--;
+	*loop = 0;
+}
+
+void	handle_names(t_main *op, char ***argv, int *argc, t_infos *infos)
+{
+	infos.nb_philo = ft_atoi(argv[0][0]);
+	if (infos.nb_philo <= 0)
+		return (ft_errors(1));
+	return (0);
+}
+
 char	init_infos(t_main *op, char **argv, int argc)
 {
 	t_infos	infos;
 	char	error;
 
-	error = 0;
-	infos.nb_philo = ft_atoi(argv[0]);
-	if (infos.nb_philo <= 0)
-		error += ft_errors(1);
+	error = handle_names(op, &argv, &argc, &infos);
 	infos.time_die = ft_atoi(argv[1]);
 	if (infos.time_die <= 0)
 		error += ft_errors(2);
@@ -72,12 +90,15 @@ char	init_infos(t_main *op, char **argv, int argc)
 int	main(int argc, char **argv)
 {
 	t_main	op;
+	char	end_loop;
 
-	if (argc < 5 || argc > 6)
+	if (argc < 5)
 		return (ft_errors(10));
-	if (init_infos(&op, argv + 1, argc == 6))
+	end_loop = 1;
+	check_endloop(&end_loop, &argc, argv);
+	if (init_infos(&op, argv + 1, argc - 1))
 		return (1);
-	op.misc->end_loop = 1;
+	op.misc->end_loop = end_loop;
 	create_forks(&op);
 	return (0);
 }

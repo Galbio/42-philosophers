@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 17:15:14 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/15 00:02:04 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 20:52:02 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ void	*routine_init(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
-	if (philo->id % 2)
-		usleep(300);
 	while (1)
 		if (routine_loop(philo))
 			break ;

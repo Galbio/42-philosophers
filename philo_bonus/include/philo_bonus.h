@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:12:38 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/14 23:47:51 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 21:30:16 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ typedef struct s_infos
 typedef struct s_misc
 {
 	int long	start_time;
+	char		end_loop;
+	char		use_name;
 	sem_t		*forks;
 	sem_t		*printf;
 	sem_t		*start;
@@ -74,6 +76,7 @@ typedef struct s_philo
 
 typedef struct s_main
 {
+	char		use_name;
 	t_infos		infos;
 	t_misc		*misc;
 	t_philo		*philos;
@@ -84,7 +87,7 @@ typedef struct s_main
 char			create_forks(t_main *op);
 
 /*		Init.c		*/
-char			init_infos(t_main *op, char **argv, char nb_meal);
+char			init_infos(t_main *op, char **argv, int argc);
 char			init_philos(t_main *op);
 char			init_op(t_main *op);
 char			init_sem(t_main *op);

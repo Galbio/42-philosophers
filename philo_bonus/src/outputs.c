@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:29:53 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/15 00:58:58 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/17 17:54:27 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	print_status(t_philo *philo, char code)
 	int long	date;
 
 	date = ft_gettimeofday() - philo->misc->start_time;
+	if (BONUS)
+		ft_putcolor(code);
 	sem_wait(philo->misc->printf);
 	if (check_stop(philo))
 	{

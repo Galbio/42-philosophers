@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:08:35 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/14 23:34:48 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 21:12:52 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,32 +82,4 @@ char	init_op(t_main *op)
 	op->philos = philos;
 	op->pids = pids;
 	return (init_philos(op));
-}
-
-char	init_infos(t_main *op, char **argv, char nb_meal)
-{
-	t_infos	infos;
-	char	error;
-
-	error = 0;
-	infos.nb_philo = ft_atoi(argv[0]);
-	if (infos.nb_philo <= 0)
-		error += ft_errors(1);
-	infos.time_die = ft_atoi(argv[1]);
-	if (infos.time_die <= 0)
-		error += ft_errors(2);
-	infos.time_eat = ft_atoi(argv[2]);
-	if (infos.time_eat <= 0)
-		error += ft_errors(3);
-	infos.time_sleep = ft_atoi(argv[3]);
-	if (infos.time_sleep <= 0)
-		error += ft_errors(4);
-	infos.nb_meal = -1;
-	if (nb_meal)
-		infos.nb_meal = ft_atoi(argv[4]);
-	if (nb_meal && (infos.nb_meal <= 0))
-		error += ft_errors(5);
-	if (error)
-		return (1);
-	return (op->infos = infos, init_op(op));
 }

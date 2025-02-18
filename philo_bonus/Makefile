@@ -6,7 +6,7 @@
 #    By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 21:25:08 by gakarbou          #+#    #+#              #
-#    Updated: 2025/02/15 00:08:30 by gakarbou         ###   ########.fr        #
+#    Updated: 2025/02/18 21:31:11 by gakarbou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,17 +20,11 @@ BON_DIR = bonus/
 INC_DIR = include/
 OBJ_DIR = objs/
 
-FILES = main.c \
-		init.c \
-		philo.c \
-		utils.c \
-		parent.c \
-		errors.c \
-		outputs.c \
-		routine.c \
+FILES = init.c philo.c utils.c parent.c errors.c outputs.c routine.c main.c
+FILES_BONUS = init.c philo.c utils.c parent.c errors.c outputs.c routine.c main_bonus.c
 
-SRCS = $(addprefix $(SRC_DIR), $(FILES))
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:.c=.o))
+OBJS_BONUS = $(addprefix $(OBJ_DIR), $(FILES_BONUS:.c=.o))
 
 all : $(NAME)
 
@@ -38,8 +32,8 @@ $(NAME) : $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
 bonus : FLAGS += -D BONUS=1
-bonus : $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
+bonus : clean $(OBJS_BONUS)
+	$(CC) $(FLAGS) $(OBJS_BONUS) -o $(NAME)
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
