@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:16 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/06 18:37:50 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 20:44:00 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,23 @@ int	main(int argc, char **argv)
 	if (argc < 5 || argc > 6)
 		return (ft_errors(1, 1));
 	op.end_loop = 1;
-	i = init_philosophers(argc - 1, argv + 1, &op);
-	if (i)
+	if (init_philosophers(argc - 1, argv + 1, &op))
 		return (ft_errors(0, 1));
 	i = -1;
-	gettimeofday(&op.misc->start, NULL);
-	op.misc->start_time = ft_gettimeofday();
 	while (++i < op.infos->nb_philo)
 	{
-		gettimeofday(&op.philos[i].last_meal, NULL);
+		op.philos[i].last_meal = ft_gettimeofday();
+		pthread_mutex_init(&op.philos[i].meal, NULL);
+		pthread_mutex_lock(&op.misc->printf);
+		op.misc->start = ft_gettimeofday();
+		pthread_mutex_unlock(&op.misc->printf);
 		pthread_create(&op.philos[i].thread, NULL, &routine, &op.philos[i]);
 	}
-	godmode(&op);
+	pthread_mutex_lock(&op.misc->printf);
+	op.misc->start = ft_gettimeofday();
+	(pthread_mutex_unlock(&op.misc->printf), godmode(&op));
 	i = -1;
 	while (++i < op.infos->nb_philo)
 		pthread_join(op.philos[i].thread, NULL);
-	free_all(&op);
-	return (0);
+	return (free_all(&op), 0);
 }

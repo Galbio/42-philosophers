@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/04 22:32:11 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 18:17:08 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,6 @@ void	free_all(t_main *op)
 		pthread_mutex_destroy(&op->misc->forks[i]);
 	}
 	pthread_mutex_destroy(&op->misc->printf);
-	pthread_mutex_destroy(&op->misc->fork);
-	pthread_mutex_destroy(&op->misc->meal);
 	pthread_mutex_destroy(&op->misc->lock);
 	free(op->infos);
 	free(op->misc->forks);

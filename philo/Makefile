@@ -6,7 +6,7 @@
 #    By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 21:25:08 by gakarbou          #+#    #+#              #
-#    Updated: 2025/02/03 19:50:32 by gakarbou         ###   ########.fr        #
+#    Updated: 2025/02/18 15:50:29 by gakarbou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ $(NAME) : $(OBJS)
 	$(CC) $(FLAGS) $(OBJS) -o $(NAME)
 
 bonus : FLAGS += -D BONUS=1
-bonus : $(BONUS_OBJS)
+bonus : clean $(BONUS_OBJS)
 	$(CC) $(FLAGS) $(BONUS_OBJS) -D BONUS=1 -o $(NAME)
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c

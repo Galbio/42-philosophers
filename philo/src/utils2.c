@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 17:17:26 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/15 00:58:10 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 20:39:07 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,15 @@ void	ft_putcolor(int code)
 		printf("%s", GREY);
 }
 
-int	print_status(int code, t_philo *philo, int long time)
+int	print_status(int code, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->misc->printf);
 	if (BONUS)
 		ft_putcolor(code);
 	if (!philo->misc->use_name)
-		printf("%ld %i ", time - philo->misc->start_time, philo->id);
+		printf("%ld %i ", ft_gettimeofday() - philo->misc->start, philo->id);
 	else
-		printf("%ld %s ", time_diff(philo->misc->start), philo->name);
+		printf("%ld %s ", ft_gettimeofday() - philo->misc->start, philo->name);
 	if (code == 1)
 		printf("has taken a fork\n");
 	else if (code == 2)
@@ -82,7 +82,8 @@ int	print_status(int code, t_philo *philo, int long time)
 		printf("died\n");
 	else
 		printf("idk\n");
-	printf("%s", RESET);
+	if (BONUS)
+		printf("%s", RESET);
 	pthread_mutex_unlock(&philo->misc->printf);
 	return (1);
 }
@@ -91,14 +92,15 @@ char	ft_usleep(long time, t_philo *philo)
 {
 	int long	start;
 
+	(void)philo;
 	start = ft_gettimeofday();
 	while (1)
 	{
 		if (check_dead(philo))
 			return (1);
-		if ((ft_gettimeofday() - start) == time)
+		if ((ft_gettimeofday() - start) >= time)
 			break ;
-		usleep(100);
+		usleep(1);
 	}
 	return (0);
 }

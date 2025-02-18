@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:39 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/09 08:44:05 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 20:41:13 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ int	wait_forks(t_philo *philo)
 	else if (philo->misc->infos->nb_philo == 1)
 	{
 		pthread_mutex_unlock(&philo->misc->lock);
-		return (print_status(1, philo, ft_gettimeofday()));
+		return (print_status(1, philo));
 	}
 	pthread_mutex_unlock(&philo->misc->lock);
-	print_status(1, philo, ft_gettimeofday());
+	print_status(1, philo);
 	pthread_mutex_lock(philo->forks[1]);
 	philo->fork_hold++;
 	if (check_dead(philo))
 		return (0);
-	return (print_status(1, philo, ft_gettimeofday()));
+	return (print_status(1, philo));
 }
 
 char	unlock_forks(t_philo *philo)
@@ -48,23 +48,23 @@ char	unlock_forks(t_philo *philo)
 
 char	routine_loop(t_philo *philo)
 {
-	print_status(4, philo, ft_gettimeofday());
+	print_status(4, philo);
 	wait_forks(philo);
 	if (check_dead(philo) || philo->fork_hold != 2)
 		return (unlock_forks(philo));
-	print_status(2, philo, ft_gettimeofday());
-	pthread_mutex_lock(&philo->misc->meal);
-	gettimeofday(&philo->last_meal, NULL);
-	pthread_mutex_unlock(&philo->misc->meal);
+	print_status(2, philo);
+	pthread_mutex_lock(&philo->meal);
+	philo->last_meal = ft_gettimeofday();
+	pthread_mutex_unlock(&philo->meal);
 	if (ft_usleep(philo->misc->infos->time_eat, philo))
 		return (unlock_forks(philo), 1);
-	pthread_mutex_lock(&philo->misc->meal);
+	pthread_mutex_lock(&philo->meal);
 	philo->nb_meal++;
-	pthread_mutex_unlock(&philo->misc->meal);
+	pthread_mutex_unlock(&philo->meal);
 	unlock_forks(philo);
 	if (check_dead(philo))
 		return (1);
-	print_status(3, philo, ft_gettimeofday());
+	print_status(3, philo);
 	if (ft_usleep(philo->misc->infos->time_sleep, philo))
 		return (1);
 	return (0);
@@ -75,10 +75,12 @@ void	*routine(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
-	if (philo->id % 2)
-		usleep(500);
+	pthread_mutex_lock(&philo->meal);
+	philo->last_meal = ft_gettimeofday();
+	pthread_mutex_unlock(&philo->meal);
 	while (!check_dead(philo))
 		if (routine_loop(philo))
 			break ;
+	pthread_mutex_destroy(&philo->meal);
 	return (NULL);
 }

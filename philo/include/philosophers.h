@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/06 18:39:27 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/18 18:15:48 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,24 +45,22 @@ typedef struct s_infos
 
 typedef struct s_misc
 {
-	struct timeval	start;
-	int long		start_time;
+	int long		start;
 	char			stop;
 	char			use_name;
 	t_infos			*infos;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	printf;
-	pthread_mutex_t	fork;
-	pthread_mutex_t	meal;
 	pthread_mutex_t	lock;
 }	t_misc;
 
 typedef struct s_philo
 {
-	struct timeval	last_meal;
 	pthread_mutex_t	*forks[2];
+	pthread_mutex_t	meal;
 	pthread_t		thread;
 	t_misc			*misc;
+	int long		last_meal;
 	char			*name;
 	char			dead;
 	char			fork_hold;
@@ -87,7 +85,7 @@ char		*ft_strdup(char *str);
 
 /*    init.c   */
 int			init_misc(t_main *op);
-int			init_philo(t_main *op, int argc, char **argv);
+int			init_philo(t_main *op, char **argv);
 int			init_infos(t_main *op, int argc, char **argv);
 int			init_philosophers(int argc, char **argv, t_main *op);
 
@@ -98,7 +96,7 @@ char		unlock_forks(t_philo *philo);
 int			wait_forks(t_philo *philo);
 
 /*   utils.c   */
-int			print_status(int code, t_philo *philo, int long time);
+int			print_status(int code, t_philo *philo);
 char		check_dead(t_philo *philo);
 int			ft_atoi(char *str);
 int			ft_errors(int code, char res);
