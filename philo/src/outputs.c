@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils2.c                                           :+:      :+:    :+:   */
+/*   outputs.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 17:17:26 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 20:39:07 by gakarbou         ###   ########.fr       */
+/*   Created: 2025/02/20 15:35:04 by gakarbou          #+#    #+#             */
+/*   Updated: 2025/02/20 16:00:59 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-int long	ft_gettimeofday(void)
-{
-	struct timeval	cur;
-
-	gettimeofday(&cur, NULL);
-	return ((cur.tv_sec * 1000) + (cur.tv_usec / 1000));
-}
 
 int	ft_errors(int code, char res)
 {
@@ -61,15 +53,21 @@ void	ft_putcolor(int code)
 		printf("%s", GREY);
 }
 
-int	print_status(int code, t_philo *philo)
+void	print_status_head(t_philo *philo, int long time, int code)
 {
-	pthread_mutex_lock(&philo->misc->printf);
 	if (BONUS)
 		ft_putcolor(code);
-	if (!philo->misc->use_name)
-		printf("%ld %i ", ft_gettimeofday() - philo->misc->start, philo->id);
+	if (philo->misc->use_name)
+		printf("%ld %s ", time, philo->name);
 	else
-		printf("%ld %s ", ft_gettimeofday() - philo->misc->start, philo->name);
+		printf("%ld %d ", time, philo->id);
+}
+
+int	print_status(int code, t_philo *philo, int long time)
+{
+	pthread_mutex_lock(&philo->misc->printf);
+	time -= philo->misc->start;
+	print_status_head(philo, time, code);
 	if (code == 1)
 		printf("has taken a fork\n");
 	else if (code == 2)
@@ -86,21 +84,4 @@ int	print_status(int code, t_philo *philo)
 		printf("%s", RESET);
 	pthread_mutex_unlock(&philo->misc->printf);
 	return (1);
-}
-
-char	ft_usleep(long time, t_philo *philo)
-{
-	int long	start;
-
-	(void)philo;
-	start = ft_gettimeofday();
-	while (1)
-	{
-		if (check_dead(philo))
-			return (1);
-		if ((ft_gettimeofday() - start) >= time)
-			break ;
-		usleep(1);
-	}
-	return (0);
 }

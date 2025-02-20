@@ -6,7 +6,7 @@
 #    By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 21:25:08 by gakarbou          #+#    #+#              #
-#    Updated: 2025/02/18 15:50:29 by gakarbou         ###   ########.fr        #
+#    Updated: 2025/02/20 15:55:17 by gakarbou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,11 +20,9 @@ BON_DIR = bonus/
 INC_DIR = include/
 OBJ_DIR = objs/
 
-FILES = utils.c routine.c init.c supervisor.c utils2.c main.c
-FILES_BONUS = utils.c routine.c init.c supervisor.c utils2.c main_bonus.c
-SRCS = $(addprefix $(SRC_DIR), $(FILES))
+FILES = main.c utils.c routine.c init.c supervisor.c time.c outputs.c
+FILES_BONUS = main_bonus.c utils.c routine.c init.c supervisor.c time.c outputs.c
 OBJS = $(addprefix $(OBJ_DIR), $(FILES:.c=.o))
-BONUS_SRCS = $(addprefix $(SRC_DIR), $(FILES_BONUS))
 BONUS_OBJS = $(addprefix $(OBJ_DIR), $(FILES_BONUS:.c=.o))
 
 all : $(NAME)

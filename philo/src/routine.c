@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:39 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 20:41:13 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/20 16:00:42 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@ int	wait_forks(t_philo *philo)
 	else if (philo->misc->infos->nb_philo == 1)
 	{
 		pthread_mutex_unlock(&philo->misc->lock);
-		return (print_status(1, philo));
+		return (print_status(1, philo, ft_gettimeofday()));
 	}
 	pthread_mutex_unlock(&philo->misc->lock);
-	print_status(1, philo);
+	print_status(1, philo, ft_gettimeofday());
 	pthread_mutex_lock(philo->forks[1]);
 	philo->fork_hold++;
 	if (check_dead(philo))
 		return (0);
-	return (print_status(1, philo));
+	return (print_status(1, philo, ft_gettimeofday()));
 }
 
 char	unlock_forks(t_philo *philo)
@@ -48,24 +48,28 @@ char	unlock_forks(t_philo *philo)
 
 char	routine_loop(t_philo *philo)
 {
-	print_status(4, philo);
+	char	res;
+
+	print_status(4, philo, ft_gettimeofday());
 	wait_forks(philo);
 	if (check_dead(philo) || philo->fork_hold != 2)
 		return (unlock_forks(philo));
-	print_status(2, philo);
+	print_status(2, philo, ft_gettimeofday());
 	pthread_mutex_lock(&philo->meal);
 	philo->last_meal = ft_gettimeofday();
 	pthread_mutex_unlock(&philo->meal);
-	if (ft_usleep(philo->misc->infos->time_eat, philo))
+	res = ft_usleep(philo->misc->infos->time_eat, philo);
+	if (res)
 		return (unlock_forks(philo), 1);
+	unlock_forks(philo);
 	pthread_mutex_lock(&philo->meal);
 	philo->nb_meal++;
 	pthread_mutex_unlock(&philo->meal);
-	unlock_forks(philo);
 	if (check_dead(philo))
 		return (1);
-	print_status(3, philo);
-	if (ft_usleep(philo->misc->infos->time_sleep, philo))
+	print_status(3, philo, ft_gettimeofday());
+	res = ft_usleep(philo->misc->infos->time_sleep, philo);
+	if (res)
 		return (1);
 	return (0);
 }

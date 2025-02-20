@@ -6,23 +6,11 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 17:32:06 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 18:17:08 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/20 15:47:30 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-long int	time_diff(struct timeval start)
-{
-	struct timeval	cur;
-	double			a;
-	double			b;
-
-	b = start.tv_usec;
-	gettimeofday(&cur, NULL);
-	a = cur.tv_usec + (1000000 * (cur.tv_sec - start.tv_sec));
-	return (a - b);
-}
 
 int	ft_atoi(char *str)
 {

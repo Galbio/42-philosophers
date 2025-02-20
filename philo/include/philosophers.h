@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:08:36 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 18:15:48 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/20 15:49:43 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,19 @@ char		unlock_forks(t_philo *philo);
 int			wait_forks(t_philo *philo);
 
 /*   utils.c   */
-int			print_status(int code, t_philo *philo);
 char		check_dead(t_philo *philo);
-int			ft_atoi(char *str);
-int			ft_errors(int code, char res);
-long int	time_diff(struct timeval start);
 void		free_all(t_main *op);
 char		*ft_strdup(char *str);
+int			ft_atoi(char *str);
+
+/*	time.c		*/
 char		ft_usleep(long time, t_philo *philo);
 int long	ft_gettimeofday(void);
+
+/*	outputs.c	*/
+int			ft_errors(int code, char res);
+int			print_status(int code, t_philo *philo, int long time);
+void		print_status_head(t_philo *philo, int long time, int code);
+void		ft_putcolor(int code);
 
 #endif
