@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:29:53 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/17 17:54:27 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/20 16:36:02 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,18 @@ void	ft_putcolor(char code)
 		printf("%s", GREY);
 }
 
-void	print_status(t_philo *philo, char code)
+int	print_status(t_philo *philo, char code, int long time)
 {
-	int long	date;
-
-	date = ft_gettimeofday() - philo->misc->start_time;
+	sem_wait(philo->misc->printf);
+	time -= philo->misc->start_time;
 	if (BONUS)
 		ft_putcolor(code);
-	sem_wait(philo->misc->printf);
 	if (check_stop(philo))
-	{
-		sem_post(philo->misc->printf);
-		return ;
-	}
-	printf("%ld %d ", date, philo->id);
+		return (sem_post(philo->misc->printf));
+	if (philo->misc->use_name)
+		printf("%ld %s ", time, philo->name);
+	else
+		printf("%ld %d ", time, philo->id);
 	if (code == 1)
 		printf("has taken a fork\n");
 	else if (code == 2)
@@ -75,5 +73,7 @@ void	print_status(t_philo *philo, char code)
 		printf("is thinking\n");
 	else if (code == 5)
 		printf("died\n");
-	sem_post(philo->misc->printf);
+	if (BONUS)
+		printf("%s", RESET);
+	return (sem_post(philo->misc->printf));
 }

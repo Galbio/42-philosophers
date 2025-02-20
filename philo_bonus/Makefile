@@ -6,14 +6,14 @@
 #    By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/29 21:25:08 by gakarbou          #+#    #+#              #
-#    Updated: 2025/02/18 21:31:11 by gakarbou         ###   ########.fr        #
+#    Updated: 2025/02/19 17:43:23 by gakarbou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo_bonus
 
 CC = cc
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 
 SRC_DIR = src/
 BON_DIR = bonus/

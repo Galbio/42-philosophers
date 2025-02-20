@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:12:38 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 21:30:16 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/20 16:34:02 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef struct s_misc
 
 typedef struct s_philo
 {
+	char		*name;
 	sem_t		meal;
 	sem_t		lock;
 	t_infos		infos;
@@ -88,8 +89,8 @@ char			create_forks(t_main *op);
 
 /*		Init.c		*/
 char			init_infos(t_main *op, char **argv, int argc);
-char			init_philos(t_main *op);
-char			init_op(t_main *op);
+char			init_philos(t_main *op, char **argv);
+char			init_op(t_main *op, char **argv);
 char			init_sem(t_main *op);
 void			close_sem(void);
 
@@ -113,14 +114,17 @@ void			*collect_meals(void *ptr);
 /*		Errors.c	*/
 void			destroy_forks(t_main *op, int nb);
 void			destroy_sem(t_main *op);
+void			free_all(t_main *op);
 
 /*		Outputs.c	*/
-void			print_status(t_philo *philo, char code);
+int				print_status(t_philo *philo, char code, int long time);
+void			ft_putcolor(char code);
 char			ft_errors(int code);
 
 /*		Utils.c		*/
 char			ft_usleep(int time, t_philo *philo);
 char			check_stop(t_philo *philo);
+char			*ft_strdup(char *str);
 int long		ft_gettimeofday(void);
 int				ft_atoi(char *str);
 

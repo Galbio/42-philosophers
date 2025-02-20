@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 00:34:45 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 21:39:50 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/19 17:44:23 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,7 @@ char	create_forks(t_main *op)
 		if (pid < 0)
 			return (destroy_forks(op, i), ft_errors(7));
 		else if (!pid)
-		{
-			init_process(&op->philos[i]);
-			(free(op->misc), free(op->pids), free(op->philos));
-			exit(0);
-		}
+			(init_process(&op->philos[i]), free_all(op), exit(0));
 		else
 			op->pids[i] = pid;
 	}
@@ -54,11 +50,31 @@ void	check_endloop(char *loop, int *argc, char **argv)
 	*loop = 0;
 }
 
-void	handle_names(t_main *op, char ***argv, int *argc, t_infos *infos)
+char	handle_names(t_main *op, char ***argv, int *argc, t_infos *infos)
 {
-	infos.nb_philo = ft_atoi(argv[0][0]);
-	if (infos.nb_philo <= 0)
-		return (ft_errors(1));
+	int		nb;
+	int		i;
+
+	nb = 0;
+	i = -1;
+	while (++i < *argc)
+	{
+		if (argv[0][i][0] >= '0' && argv[0][i][0] <= '9')
+		{
+			if (!i)
+			{
+				return (infos->nb_philo = ft_atoi(argv[0][0]),
+						*argv += 1, infos->nb_philo == -1);
+			}
+			op->use_name = 1;
+			break ;
+		}
+		nb++;
+	}
+	op->use_name = 1;
+	infos->nb_philo = nb;
+	*argc -= infos->nb_philo - 1;
+	*argv += infos->nb_philo;
 	return (0);
 }
 
@@ -68,23 +84,25 @@ char	init_infos(t_main *op, char **argv, int argc)
 	char	error;
 
 	error = handle_names(op, &argv, &argc, &infos);
-	infos.time_die = ft_atoi(argv[1]);
+	argc--;
+	infos.time_die = ft_atoi(argv[0]);
 	if (infos.time_die <= 0)
 		error += ft_errors(2);
-	infos.time_eat = ft_atoi(argv[2]);
+	infos.time_eat = ft_atoi(argv[1]);
 	if (infos.time_eat <= 0)
 		error += ft_errors(3);
-	infos.time_sleep = ft_atoi(argv[3]);
+	infos.time_sleep = ft_atoi(argv[2]);
 	if (infos.time_sleep <= 0)
 		error += ft_errors(4);
 	infos.nb_meal = -1;
-	if (argc == 6)
-		infos.nb_meal = ft_atoi(argv[4]);
-	if ((argc == 6) && (infos.nb_meal <= 0))
+	if (argc == 4)
+		infos.nb_meal = ft_atoi(argv[3]);
+	if ((argc == 4) && (infos.nb_meal <= 0))
 		error += ft_errors(5);
 	if (error)
 		return (1);
-	return (op->infos = infos, init_op(op));
+	argv -= infos.nb_philo;
+	return (op->infos = infos, init_op(op, argv));
 }
 
 int	main(int argc, char **argv)
@@ -95,6 +113,7 @@ int	main(int argc, char **argv)
 	if (argc < 5)
 		return (ft_errors(10));
 	end_loop = 1;
+	op.use_name = 0;
 	check_endloop(&end_loop, &argc, argv);
 	if (init_infos(&op, argv + 1, argc - 1))
 		return (1);

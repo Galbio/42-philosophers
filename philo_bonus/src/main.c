@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 00:34:45 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 21:13:49 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/19 18:07:31 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,7 @@ char	create_forks(t_main *op)
 		if (pid < 0)
 			return (destroy_forks(op, i), ft_errors(7));
 		else if (!pid)
-		{
-			init_process(&op->philos[i]);
-			(free(op->misc), free(op->pids), free(op->philos));
-			exit(0);
-		}
+			(init_process(&op->philos[i]), free_all(op), exit(0));
 		else
 			op->pids[i] = pid;
 	}
@@ -66,7 +62,7 @@ char	init_infos(t_main *op, char **argv, int argc)
 		error += ft_errors(5);
 	if (error)
 		return (1);
-	return (op->infos = infos, init_op(op));
+	return (op->infos = infos, init_op(op, argv));
 }
 
 int	main(int argc, char **argv)
@@ -75,7 +71,8 @@ int	main(int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 		return (ft_errors(10));
-	if (init_infos(&op, argv + 1, argc == 6))
+	op.use_name = 0;
+	if (init_infos(&op, argv + 1, argc))
 		return (1);
 	op.misc->end_loop = 1;
 	create_forks(&op);

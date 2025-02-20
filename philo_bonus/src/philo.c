@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:45:42 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 21:05:21 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/20 16:59:02 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,13 @@ void	*check_death(void *ptr)
 		sem_post(&philo->meal);
 		if (!philo->dead && diff > philo->infos.time_die)
 		{
-			print_status(philo, 5);
+			print_status(philo, 5, ft_gettimeofday());
 			sem_post(philo->misc->stop);
 			sem_wait(&philo->lock);
 			philo->dead++;
 			sem_post(&philo->lock);
 		}
-		usleep(10);
+		usleep(500);
 	}
 	return (NULL);
 }
@@ -88,9 +88,5 @@ void	init_process(t_philo *philo)
 	check_end(philo);
 	pthread_join(checker, NULL);
 	pthread_join(routine, NULL);
-	if (philo->infos.nb_meal > 0)
-		sem_close(philo->misc->meals);
-	(sem_close(philo->misc->start), sem_close(philo->misc->stop));
-	(sem_close(philo->misc->printf), sem_close(philo->misc->forks));
 	return ;
 }

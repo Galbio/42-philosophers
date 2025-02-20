@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:08:35 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/18 21:12:52 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/19 18:21:58 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,15 @@ char	init_sem(t_main *op)
 	return (0);
 }
 
-char	init_philos(t_main *op)
+char	init_philos(t_main *op, char **argv)
 {
 	int		i;
 
 	i = -1;
 	while (++i < op->infos.nb_philo)
 	{
+		if (op->use_name)
+			op->philos[i].name = ft_strdup(argv[i]);
 		op->philos[i].stop = 0;
 		op->philos[i].id = i + 1;
 		op->philos[i].nb_meal = 0;
@@ -60,7 +62,7 @@ void	close_sem(void)
 	sem_unlink("/meals");
 }
 
-char	init_op(t_main *op)
+char	init_op(t_main *op, char **argv)
 {
 	t_philo	*philos;
 	pid_t	*pids;
@@ -75,11 +77,12 @@ char	init_op(t_main *op)
 	misc = malloc(sizeof(t_misc));
 	if (!misc)
 		return (free(philos), free(pids), ft_errors(9));
+	misc->use_name = op->use_name;
 	op->misc = misc;
 	close_sem();
 	if (init_sem(op))
 		return (free(philos), free(pids), 1);
 	op->philos = philos;
 	op->pids = pids;
-	return (init_philos(op));
+	return (init_philos(op, argv));
 }

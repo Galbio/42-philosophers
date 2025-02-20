@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 01:14:33 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/15 01:02:24 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/19 18:27:37 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	ft_usleep(int time, t_philo *philo)
 			return (1);
 		if ((ft_gettimeofday() - start) >= time)
 			return (0);
-		usleep(5);
+		usleep(50);
 	}
 	return (0);
 }
@@ -66,4 +66,26 @@ char	check_stop(t_philo *philo)
 		res++;
 	sem_post(&philo->lock);
 	return (res);
+}
+
+char	*ft_strdup(char *str)
+{
+	char	*dest;
+	int		i;
+
+	if (!str[0])
+		return (ft_strdup("GoodTry"));
+	if (str[0] == '\\' && str[1])
+		str++;
+	i = -1;
+	while (str[++i])
+		;
+	dest = malloc(sizeof(char) * (i + 1));
+	if (!dest)
+		return (NULL);
+	i = -1;
+	while (str[++i])
+		dest[i] = str[i];
+	dest[i] = 0;
+	return (dest);
 }
