@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:12:38 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/20 16:34:02 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/21 13:53:35 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ char			init_sem(t_main *op);
 void			close_sem(void);
 
 /*		Philo.c		*/
-void			init_process(t_philo *philo);
+void			init_process(t_philo *philo, int i);
 void			check_end(t_philo *philo);
 void			*check_death(void *ptr);
 void			check_meals(t_philo *philo);
@@ -115,6 +115,7 @@ void			*collect_meals(void *ptr);
 void			destroy_forks(t_main *op, int nb);
 void			destroy_sem(t_main *op);
 void			free_all(t_main *op);
+void			valgrind_friendly_sem(t_philo *philo);
 
 /*		Outputs.c	*/
 int				print_status(t_philo *philo, char code, int long time);

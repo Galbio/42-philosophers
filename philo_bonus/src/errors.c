@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:39:55 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/19 17:48:08 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/21 13:57:24 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,17 @@ void	destroy_forks(t_main *op, int nb)
 	i = -1;
 	while (++i < nb)
 		kill(op->pids[i], SIGKILL);
+}
+
+void	valgrind_friendly_sem(t_philo *philo)
+{
+	int		i;
+
+	i = -1;
+	while ((philo->infos.nb_meal > 0) && (++i < philo->infos.nb_philo))
+		sem_wait(philo->misc->meals);
+	sem_wait(philo->misc->start);
+	sem_wait(philo->misc->stop);
 }
 
 void	destroy_sem(t_main *op)

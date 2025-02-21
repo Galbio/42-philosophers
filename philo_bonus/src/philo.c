@@ -6,7 +6,7 @@
 /*   By: gakarbou <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 02:45:42 by gakarbou          #+#    #+#             */
-/*   Updated: 2025/02/20 16:59:02 by gakarbou         ###   ########.fr       */
+/*   Updated: 2025/02/21 20:59:24 by gakarbou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ void	*check_death(void *ptr)
 		if (!philo->dead && diff > philo->infos.time_die)
 		{
 			print_status(philo, 5, ft_gettimeofday());
-			sem_post(philo->misc->stop);
+			if (philo->misc->end_loop)
+				sem_post(philo->misc->stop);
 			sem_wait(&philo->lock);
 			philo->dead++;
 			sem_post(&philo->lock);
@@ -71,15 +72,16 @@ void	*check_death(void *ptr)
 	return (NULL);
 }
 
-void	init_process(t_philo *philo)
+void	init_process(t_philo *philo, int i)
 {
 	pthread_t	routine;
 	pthread_t	checker;
 
+	if (!i)
+		valgrind_friendly_sem(philo);
 	philo->dead = 0;
 	sem_init(&philo->meal, 0, 1);
 	sem_init(&philo->lock, 0, 1);
-	sem_wait(philo->misc->start);
 	sem_post(philo->misc->start);
 	philo->misc->start_time = ft_gettimeofday();
 	philo->last_meal = ft_gettimeofday();
